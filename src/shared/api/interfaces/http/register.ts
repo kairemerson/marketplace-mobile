@@ -1,4 +1,3 @@
-import { UserInterface } from '../user'
 
 export interface RegisterHttpParams {
   name: string
@@ -8,8 +7,3 @@ export interface RegisterHttpParams {
   password: string
 }
 
-export interface RegisterHttpResponse {
-  user: UserInterface
-  token: string
-  refreshToken: string
-}
