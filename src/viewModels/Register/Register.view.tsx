@@ -6,8 +6,10 @@ import { AppInputController } from "../../shared/components/AppInputController";
 import { AuthFormHeader } from "../../shared/components/AuthFormHeader";
 import { router } from "expo-router";
 import { KeyboardContainer } from "../../shared/components/KeyboardContainer";
+import { AppButton } from "../../shared/components/AppButton";
+import { Ionicons } from "@expo/vector-icons";
 
-export const RegisterView: FC<ReturnType<typeof useRegisterViewModel>> = ({onSubmit, control}) =>{
+export const RegisterView: FC<ReturnType<typeof useRegisterViewModel>> = ({onSubmit, control, handleSelectAvatar}) =>{
 
     const [email, setEmail] = useState("")
 
@@ -16,18 +18,16 @@ export const RegisterView: FC<ReturnType<typeof useRegisterViewModel>> = ({onSub
             <ScrollView className="flex-1 px-[40px]">
                 <AuthFormHeader title="Crie sua conta" subtitle="Informe seus dados pessoais e de acesso"/>
 
+                <TouchableOpacity onPress={handleSelectAvatar}>
+                    <Ionicons name="cloud-upload-outline" size={32}/>
+                </TouchableOpacity>
+
                 <AppInputController
                     control={control}
                     name="name"
                     label="NOME"
                     leftIcon="person-outline" 
-                />
-
-                <AppInputController
-                    control={control}
-                    name="email"
-                    label="EMAIL"
-                    leftIcon="mail-outline" 
+                    placeholder="Seu nome completo"
                 />
 
                 <AppInputController
@@ -35,6 +35,17 @@ export const RegisterView: FC<ReturnType<typeof useRegisterViewModel>> = ({onSub
                     name="phone"
                     label="TELEFONE"
                     leftIcon="call-outline" 
+                    placeholder="(00) 00000-0000"
+                />
+
+                <Text className="text-base mt-6 font-bold text-gray-500">Acesso</Text>
+
+                <AppInputController
+                    control={control}
+                    name="email"
+                    label="EMAIL"
+                    leftIcon="mail-outline" 
+                    placeholder="mail@examplo.com"
                 />
 
                 <AppInputController
@@ -43,6 +54,7 @@ export const RegisterView: FC<ReturnType<typeof useRegisterViewModel>> = ({onSub
                     label="SENHA"
                     leftIcon="lock-closed-outline" 
                     secureTextEntry
+                    placeholder="Sua senha"
                 />
 
                 <AppInputController
@@ -51,15 +63,19 @@ export const RegisterView: FC<ReturnType<typeof useRegisterViewModel>> = ({onSub
                     label="CONFIRMAR SENHA"
                     leftIcon="lock-closed-outline" 
                     secureTextEntry
+                     placeholder="Confirme a senha"
                 />
 
-                <TouchableOpacity>
-                    <Text>Registrar</Text>
-                </TouchableOpacity>
+                <AppButton className="mt-6" onPress={onSubmit}>
+                    Registrar
+                </AppButton>
 
-                <TouchableOpacity onPress={() => router.push("/login")}>
-                    <Text>login</Text>
-                </TouchableOpacity>
+                <View className="mt-16">
+                    <Text className="text-base text-gray-300 mb-6 ">Já tem uma conta?</Text>
+                    <AppButton variant="outlined" onPress={() => router.push("/login")}>
+                        login
+                    </AppButton>
+                </View>
 
             </ScrollView>
         </KeyboardContainer>
