@@ -22,7 +22,7 @@ export const SelectionModal: FC<SelectionModalProps> = ({options, title, message
             }
         )
     return (
-        <View className="bg-white rounded-xl shadow-2xl w-[85%] mx-auto max-w-sm">
+        <View className="bg-white rounded-xl shadow-2xl w-[85%] p-6 mx-auto max-w-sm">
             <View className="items-center ">
                 <Text className="text-lg font-bold text-gray-900 mb-3">{title}</Text>
                 {message && <Text className="text-base text-gray-600 mb-6 leading-6">{message}</Text>}                
@@ -30,8 +30,8 @@ export const SelectionModal: FC<SelectionModalProps> = ({options, title, message
 
             <View className="gap-3">
                 {
-                    options.map((option) => (
-                        <TouchableOpacity className={getButtonClass(option.variant ?? "primary")} onPress={option.onPress}>
+                    options.map((option,index) => (
+                        <TouchableOpacity key={`selection-${index}`} className={getButtonClass(option.variant ?? "primary")} onPress={option.onPress}>
                             {option.icon && (
                                 <Ionicons name={option.icon} size={20} color={colors.white} className="mr-2"/>
                             )}

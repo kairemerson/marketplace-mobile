@@ -3,33 +3,24 @@ import {yupResolver} from "@hookform/resolvers/yup"
 import { RegisterFormData, registerScheme } from "./register.scheme"
 import { useRegisterMutation } from "../../shared/queries/auth/useRegister.mutation"
 import { useUserStore } from "../../shared/store/user-store"
-import { useAppModal } from "../../shared/hooks/useAppModal"
+import { useImage } from "../../shared/hooks/useImage"
+import { useState } from "react"
+import { CameraType } from "expo-image-picker"
+import { useUploadAvatarMutation } from "../../shared/queries/auth/useUploadAvatar.mutation"
 
 export const useRegisterViewModel = () => {
 
-    const userRegisterMutation = useRegisterMutation()
-    const {setSession, user} = useUserStore()
-    const modals = useAppModal()
+    const {updateUser} = useUserStore()
+    const [avatarUri, setAvatarUri] = useState<string | null>(null)
+    
 
-    const handleSelectAvatar = () => {
-        modals.showSelection({
-            title: "Selecionar foto",
-            message: "Escolha uma opção",
-            options: [
-                {
-                    text: "Galeria",
-                    icon: "images",
-                    variant: "primary",
-                    onPress: () => {}
-                },
-                {
-                    text: "Câmera",
-                    icon: "camera",
-                    variant: "primary",
-                    onPress: () => {}
-                },
-            ]
-        })
+    const {handleSelectImage} = useImage({
+        callback: setAvatarUri,
+        cameraType: CameraType.front
+    })
+
+    const handleSelectAvatar = async () => {
+        await handleSelectImage()
     }
 
     const {control, handleSubmit, formState: {errors}} = useForm<RegisterFormData>({
@@ -43,21 +34,31 @@ export const useRegisterViewModel = () => {
         }
     })
 
+    const uploadAvatarMutation = useUploadAvatarMutation()
+
+    const userRegisterMutation = useRegisterMutation({
+        onSuccess: async () => {
+            if(avatarUri) {
+                const {url} = await uploadAvatarMutation.mutateAsync(avatarUri)
+                console.log("userRegisterViewModel=====>",{url});
+                
+                updateUser({avatarUrl: url})
+                
+            }
+        }
+    })
+
     const onSubmit = handleSubmit(async (userData) => {
         const {confirmPassword, ...registerData} = userData
-        const mutationResponse = await userRegisterMutation.mutateAsync(registerData)
+        await userRegisterMutation.mutateAsync(registerData)
 
-        setSession({
-            refreshToken: mutationResponse.refreshToken,
-            token: mutationResponse.token,
-            user: mutationResponse.user
-        })
     })
 
     return {
       control,
       errors,
       onSubmit,
-      handleSelectAvatar
+      handleSelectAvatar,
+      avatarUri
     }
 }
