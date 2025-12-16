@@ -10,8 +10,12 @@ export default function PrivateLayout() {
         return <Redirect href="/(public)/login"/>
     }
 
-    return <Stack>
-        <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
-        <AppBottomSheet/>
-    </Stack>
+    return (
+        <>
+            <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            </Stack>
+            <AppBottomSheet />
+        </>
+    )
 }

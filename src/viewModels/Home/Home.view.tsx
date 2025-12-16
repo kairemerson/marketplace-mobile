@@ -1,13 +1,11 @@
 import { FlatList, RefreshControl, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { HomeHeader } from "./components/Header"
-import { SearchInput } from "./components/SearchInput"
-import { ProductInterface } from "../../shared/api/interfaces/product"
 import { ProductCard } from "./components/ProductCard"
 import { FC } from "react"
 import { useHomeViewModel } from "./useHome.ViewModel"
 import { Footer } from "./components/Footer"
 import { colors } from "../../styles/colors"
+import { RenderHeader } from "./components/RenderHeader"
 
 export const HomeView: FC<ReturnType<typeof useHomeViewModel>> = ({
     products, 
@@ -16,7 +14,10 @@ export const HomeView: FC<ReturnType<typeof useHomeViewModel>> = ({
     hasNextPage, 
     isLoading, 
     isRefetching,
-    isFetchingNextPage}) => {
+    isFetchingNextPage,
+    setSearchInputText,
+    searchInputText
+}) => {
 
     return (
         <SafeAreaView edges={["top"]} className="flex-1">
@@ -28,12 +29,7 @@ export const HomeView: FC<ReturnType<typeof useHomeViewModel>> = ({
                 onEndReached={handleEnReached}
                 columnWrapperStyle={{justifyContent: "space-between"}}
                 ListFooterComponent={<Footer isLoading={hasNextPage && Boolean(isLoading || isFetchingNextPage)}/>}
-                ListHeaderComponent={() => (
-                    <>
-                        <HomeHeader/>
-                        <SearchInput/>
-                    </>
-                )}
+                ListHeaderComponent={<RenderHeader searchInputText={searchInputText} setSearchInputText={setSearchInputText}/>}
                 contentContainerClassName="px-[16px] pb-[120px]"
                 refreshControl={
                     <RefreshControl 
